@@ -1,0 +1,43 @@
+// catalog-service が所有するデータ。書籍とレビューを管理する。
+// userId は user-service が持つ User.id（ULID）を指す論理参照。
+// マイクロサービス間ではDBをまたぐ外部キーは張らない（境界を越えるFKを避ける）。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id              String   @id @db.Char(26) // ULID
+  title           String
+  author          String
+  isbn            String?
+  description     String?  @db.Text
+  createdByUserId String   @db.Char(26) // User.id への論理参照
+  createdAt       DateTime @default(now())
+
+  reviews Review[]
+
+  @@map("books")
+}
+
+model Review {
+  id        String   @id @db.Char(26) // ULID
+  bookId    String   @db.Char(26)
+  userId    String   @db.Char(26) // User.id への論理参照
+  rating    Int // 1..5（範囲チェックはアプリ側で行う）
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  // 1ユーザー1書籍につき1レビュー
+  @@unique([bookId, userId])
+  @@index([bookId])
+  @@map("reviews")
+}

@@ -1,0 +1,30 @@
+{
+  // このリポジトリを開いたときに VS Code が推奨する拡張機能。
+  // 右下の通知、または拡張機能ビューの「推奨」から一括インストールできる。
+  "recommendations": [
+    // --- コード品質 / フォーマット ---
+    "dbaeumer.vscode-eslint", // ESLint
+    "esbenp.prettier-vscode", // Prettier（既定フォーマッタ）
+    "editorconfig.editorconfig", // .editorconfig 反映
+
+    // --- 言語 / フレームワーク ---
+    "Prisma.prisma", // Prisma スキーマの補完・整形
+    "GraphQL.vscode-graphql", // GraphQL 補完・スキーマ連携
+    "GraphQL.vscode-graphql-syntax", // GraphQL シンタックスハイライト
+    "zxh404.vscode-proto3", // Protocol Buffers (.proto)
+
+    // --- テスト ---
+    "ms-playwright.playwright", // Playwright (E2E)
+    "Orta.vscode-jest", // Jest ランナー連携
+
+    // --- 開発支援 ---
+    "ms-azuretools.vscode-docker", // docker-compose / MySQL コンテナ
+    "usernamehw.errorlens", // エラーを行内に表示
+    "yoavbls.pretty-ts-errors", // TypeScript エラーを読みやすく
+    "streetsidesoftware.code-spell-checker", // スペルチェック
+    "eamodio.gitlens" // Git 履歴・blame
+  ],
+
+  // 入れない方がよい拡張（competing formatter 等があればここに記載）
+  "unwantedRecommendations": []
+}

@@ -1,0 +1,25 @@
+{
+  "name": "bookshelf",
+  "version": "0.0.0",
+  "private": true,
+  "description": "BookShelf 開発演習スターターキット (モノレポ / pnpm)",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "prisma:migrate": "pnpm --filter user-service prisma:migrate && pnpm --filter catalog-service prisma:migrate",
+    "prisma:generate": "pnpm --filter user-service prisma:generate && pnpm --filter catalog-service prisma:generate"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.12.0"
+}

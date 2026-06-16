@@ -1,0 +1,2 @@
+# このディレクトリには Next.js の静的アセットを置きます。
+# `pnpm --filter web msw:init` を実行すると mockServiceWorker.js が生成されます。

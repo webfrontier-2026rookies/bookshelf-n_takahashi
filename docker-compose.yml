@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bookshelf-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      # 開発用。本番ではこの値を使わないこと。
+    ports:
+      - "3306:3306"
+    volumes:
+      - bookshelf-mysql-data:/var/lib/mysql
+      # サービスごとにDBを分ける（database per service）。初回起動時に実行される。
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  bookshelf-mysql-data:

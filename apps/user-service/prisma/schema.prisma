@@ -1,0 +1,21 @@
+// user-service が所有するデータ。ユーザー（認証）を管理する。
+// 主キーは ULID を文字列カラムとして保持する（採番はアプリ側 ulid() で行う）。
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @db.Char(26) // ULID
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  createdAt    DateTime @default(now())
+
+  @@map("users")
+}

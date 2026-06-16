@@ -1,0 +1,85 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "install",
+      "type": "shell",
+      "command": "pnpm install",
+      "problemMatcher": []
+    },
+    {
+      "label": "dev (all)",
+      "detail": "4アプリを並列起動",
+      "type": "shell",
+      "command": "pnpm dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated" }
+    },
+    {
+      "label": "db: up",
+      "detail": "MySQL コンテナを起動",
+      "type": "shell",
+      "command": "pnpm db:up",
+      "problemMatcher": []
+    },
+    {
+      "label": "db: down",
+      "detail": "MySQL コンテナを停止",
+      "type": "shell",
+      "command": "pnpm db:down",
+      "problemMatcher": []
+    },
+    {
+      "label": "prisma: migrate",
+      "detail": "両サービスのマイグレーションを実行",
+      "type": "shell",
+      "command": "pnpm prisma:migrate",
+      "problemMatcher": []
+    },
+    {
+      "label": "prisma: generate",
+      "type": "shell",
+      "command": "pnpm prisma:generate",
+      "problemMatcher": []
+    },
+    {
+      "label": "graphql: codegen (web)",
+      "detail": "BFF 起動中に web の型を生成",
+      "type": "shell",
+      "command": "pnpm --filter web codegen",
+      "problemMatcher": []
+    },
+    {
+      "label": "test (all)",
+      "detail": "全アプリのユニットテスト (Jest)",
+      "type": "shell",
+      "command": "pnpm -r test",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "test: e2e (web)",
+      "detail": "Playwright E2E",
+      "type": "shell",
+      "command": "pnpm --filter web test:e2e",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "storybook (web)",
+      "detail": "Storybook をローカル起動",
+      "type": "shell",
+      "command": "pnpm --filter web storybook",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated" }
+    },
+    {
+      "label": "lint (all)",
+      "type": "shell",
+      "command": "pnpm -r lint",
+      "problemMatcher": ["$eslint-stylish"]
+    }
+  ]
+}

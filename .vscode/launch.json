@@ -1,0 +1,93 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ===== バックエンド: NestJS マイクロサービス (gRPC) =====
+    {
+      "name": "Debug: user-service",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/user-service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug"],
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+    {
+      "name": "Debug: catalog-service",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/catalog-service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug"],
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+
+    // ===== BFF: NestJS + GraphQL =====
+    {
+      "name": "Debug: bff",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/bff",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug"],
+      "autoAttachChildProcesses": true,
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+
+    // ===== フロントエンド: Next.js =====
+    // サーバ側（getServerSideProps / API ルート等）のデバッグ
+    {
+      "name": "Debug: web (Next.js server)",
+      "type": "node-terminal",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/web",
+      "command": "pnpm run dev"
+    },
+    // クライアント側（ブラウザ上のコンポーネント）のデバッグ
+    {
+      "name": "Debug: web (Next.js client / Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/apps/web"
+    },
+
+    // ===== テスト =====
+    {
+      "name": "Debug: Jest (現在のファイル)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${fileWorkspaceFolder}",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["exec", "jest", "${fileBasenameNoExtension}", "--runInBand"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      // バックエンド2サービス + BFF をまとめて起動・デバッグ
+      "name": "Debug: backend (services + bff)",
+      "configurations": ["Debug: user-service", "Debug: catalog-service", "Debug: bff"],
+      "stopAll": true
+    },
+    {
+      // フロントからバックエンドまで全層をデバッグ
+      "name": "Debug: full stack",
+      "configurations": [
+        "Debug: user-service",
+        "Debug: catalog-service",
+        "Debug: bff",
+        "Debug: web (Next.js server)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

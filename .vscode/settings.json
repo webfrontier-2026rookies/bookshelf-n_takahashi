@@ -1,0 +1,88 @@
+{
+  // ===== エディタ共通 =====
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.rulers": [100],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    // 保存時に ESLint の自動修正と import 整理を実行
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  // ===== 言語別フォーマッタ =====
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[graphql]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[prisma]": { "editor.defaultFormatter": "Prisma.prisma" },
+
+  // ===== ESLint（モノレポ: 各アプリを作業ディレクトリとして認識） =====
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // ===== TypeScript =====
+  // ワークスペースの TypeScript を使う（グローバル版とのズレを防ぐ）
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  // ===== ファイル表示 =====
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/pnpm-lock.yaml": true,
+    "apps/web/src/gql": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true
+  },
+
+  // ===== ファイル関連付け =====
+  "files.associations": {
+    "*.proto": "proto3",
+    ".env.example": "dotenv",
+    ".env.*": "dotenv"
+  },
+
+  // ===== GraphQL（codegen 用スキーマの場所をエディタに教える） =====
+  // BFF をコードファーストで生成するため、起動後に schema.gql が出力される
+  "graphql-config.load.filePath": "${workspaceFolder}/apps/bff/src/schema.gql",
+
+  // ===== スペルチェック（プロジェクト固有語を許可） =====
+  "cSpell.words": [
+    "bookshelf",
+    "mantine",
+    "mercurius",
+    "nestjs",
+    "fastify",
+    "urql",
+    "zustand",
+    "prisma",
+    "ulid",
+    "graphiql",
+    "dataloader",
+    "grpc",
+    "codegen"
+  ]
+}
