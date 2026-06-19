@@ -1,0 +1,8 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  """フロント→BFF→gRPCサービスの疎通確認用クエリ"""
+  health: String!
+}
