@@ -5,6 +5,8 @@
   "description": "サービス間で共有する .proto 定義",
   "exports": {
     "./health.proto": "./src/health.proto",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./user.proto": "./src/user.proto",
+    "./catalog.proto": "./src/catalog.proto"
   }
 }
