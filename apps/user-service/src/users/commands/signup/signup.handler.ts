@@ -19,7 +19,7 @@ export class SignUpCommandHandler {
     }
 
     // 2. ULID生成 ＆ 3. パスワードハッシュ化
-    const userId = ulid(); // @db.Char(26) なので、生成される26文字のULIDが綺麗に収まります！
+    const userId = ulid(); //26文字のULID
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     // 4. データベースへの登録
