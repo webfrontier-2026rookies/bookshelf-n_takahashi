@@ -1,7 +1,10 @@
-import { Module } from '@nestjs/common';
-import { ClsModule } from 'nestjs-cls';
-import { PrismaModule } from './prisma/prisma.module';
-import { HealthModule } from './health/health.module';
+import { Module } from "@nestjs/common";
+import { ClsModule } from "nestjs-cls";
+import { PrismaModule } from "./prisma/prisma.module";
+import { HealthModule } from "./health/health.module";
+import { JwtModule } from "@nestjs/jwt";
+import { SignUpCommandHandler } from "src/users/commands/signup/signup.handler";
+import { LoginQueryHandler } from "src/users/commands/login/login.handler";
 
 @Module({
   imports: [
@@ -11,6 +14,12 @@ import { HealthModule } from './health/health.module';
     PrismaModule,
     HealthModule,
     // TODO(学習者): commands / queries モジュール（SignUp, Login など）を追加する
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: "1d" },
+    }),
   ],
+  controllers: [],
+  providers: [SignUpCommandHandler, LoginQueryHandler],
 })
 export class AppModule {}
