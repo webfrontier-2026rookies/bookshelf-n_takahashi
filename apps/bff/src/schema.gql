@@ -2,7 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Mutation {
+  signUp(dto: SignUpDto!): String!
+}
+
 type Query {
   """フロント→BFF→gRPCサービスの疎通確認用クエリ"""
   health: String!
+}
+
+input SignUpDto {
+  displayName: String!
+  email: String!
+  passwordHash: String!
 }
