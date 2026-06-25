@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
 // 認証状態のクライアントストア（雛形）。
 // 学習者はログイン成功時に setToken を呼び、保護ページやヘッダ付与に利用する。
