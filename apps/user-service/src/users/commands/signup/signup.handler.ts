@@ -28,7 +28,7 @@ export class SignUpCommandHandler {
         id: userId,
         email: dto.email,
         passwordHash: hashedPassword,
-        displayName: dto.email.split("@")[0],
+        displayName: dto.displayName,
       },
       select: {
         id: true,
