@@ -4,7 +4,6 @@ import { MercuriusDriver, MercuriusDriverConfig } from "@nestjs/mercurius";
 import { join } from "path";
 import { HealthModule } from "./health/health.module";
 import { UserResolver } from "./users/user.resolver";
-import { credentials } from "@grpc/grpc-js";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 
 @Module({
@@ -15,12 +14,12 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
         transport: Transport.GRPC,
         options: {
           package: "user",
-          protoPath: join(process.cwd(), "../../packages/proto/src/user.proto"), // ⚠️ プロジェクトの user.proto の本物の位置に合わせてパスを微調整してください
+          protoPath: join(process.cwd(), "../../packages/proto/src/user.proto"),
           url: "localhost:50051",
         },
       },
     ]),
-    // コードファースト: リゾルバの型定義から schema.gql を自動生成する。
+    //resolver.tsの型定義からschema.gql を自動生成
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),

@@ -13,7 +13,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  // フロントエンド (Next.js) からのアクセスを許可する（開発用）
+  //フロントエンドからのアクセスを許可
   app.enableCors({
     origin: "http://localhost:3000",
     credentials: true,

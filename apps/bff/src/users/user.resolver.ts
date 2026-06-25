@@ -9,7 +9,7 @@ import {
 } from "@nestjs/graphql";
 import { firstValueFrom } from "rxjs";
 import { Inject, OnModuleInit } from "@nestjs/common";
-import { ClientGrpc } from "@nestjs/microservices"; // 💡 追加
+import { ClientGrpc } from "@nestjs/microservices";
 
 //新規登録時のユーザ－の入力値
 @InputType()
@@ -57,9 +57,7 @@ interface IUserService {
 export class UserResolver implements OnModuleInit {
   private userServiceClient!: IUserService;
 
-  constructor(
-    @Inject("USER_PACKAGE") private client: ClientGrpc, // 💡 依存関係の注入
-  ) {}
+  constructor(@Inject("USER_PACKAGE") private client: ClientGrpc) {}
 
   //起動時の初期化処理
   onModuleInit() {
@@ -69,10 +67,10 @@ export class UserResolver implements OnModuleInit {
 
   @Mutation(() => SignUpResponse)
   async signUp(@Args("dto", { type: () => SignUpDto }) dto: SignUpDto) {
-    console.log("--- 🎉 BFFの窓口が正式な SignUpDto を受け取りました！ ---");
+    console.log("---SignUpDtoを受け取りました---");
     await firstValueFrom(this.userServiceClient.signUp(dto));
     return {
-      message: "BFFで型を認識し、受け取りに成功しました！",
+      message: "受け取りに成功しました",
     };
   }
 
@@ -81,7 +79,7 @@ export class UserResolver implements OnModuleInit {
     @Args("dto", { type: () => LoginDto }) dto: LoginDto,
     @Context() context: any,
   ) {
-    console.log("--- 🔑 BFF：ログインの受付をしました ---", dto);
+    console.log("---ログインの受付をしました---", dto);
 
     const result = await firstValueFrom(this.userServiceClient.login(dto));
 
@@ -96,9 +94,7 @@ export class UserResolver implements OnModuleInit {
       });
     }
 
-    console.log(
-      "クッキー(HttpOnly)のセットが完了しました。画面にお返事します。",
-    );
+    console.log("クッキー(HttpOnly)のセットが完了しました。");
     return {
       accessToken: result.accessToken,
       email: dto.email,

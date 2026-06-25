@@ -10,30 +10,17 @@ export class UsersController {
 
     private readonly createUserCommandHandler: SignUpCommandHandler,
   ) {}
-
-  /**
-   * 🎯 BFFからの「Login」の電話（gRPC）を一番手前で受け取る窓口
-   * 読み取り系なので queries フォルダの職人にバトンタッチします
-   */
+  // BFFからのログインへのgRPCリクエストを一番手前で受け取る窓口
   @GrpcMethod("UserService", "Login")
   async login(dto: any) {
-    console.log(
-      "---[UsersController] gRPC経由で Login を受信しました ---",
-      dto,
-    );
+    console.log("---Login を受信しました---", dto);
     return await this.loginQueryHandler.execute(dto);
   }
 
-  /**
-   * 🎯 BFFからの「SignUp（新規登録）」の電話（gRPC）を一番手前で受け取る窓口
-   * 書き込み系なので、本来は commands フォルダの職人にバトンタッチします
-   */
+  //BFFからの新規登録へのgRPCリクエストを一番手前で受け取る窓口
   @GrpcMethod("UserService", "SignUp")
   async signUp(dto: any) {
-    console.log(
-      "---[UsersController] gRPC経由で SignUp を受信しました ---",
-      dto,
-    );
+    console.log("---SignUp を受信しました---", dto);
     return await this.createUserCommandHandler.execute(dto);
   }
 }
