@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
-    "@mantine/core": "^8.0.0",
-    "@mantine/hooks": "^8.0.0",
+    "@mantine/core": "^8.3.18",
+    "@mantine/hooks": "^8.3.18",
     "graphql": "^16.9.0",
     "next": "15.5.0",
     "react": "18.3.1",
@@ -42,13 +42,15 @@
     "eslint-config-next": "15.5.0",
     "msw": "^2.4.0",
     "msw-storybook-addon": "^2.0.3",
-    "postcss": "^8.4.40",
-    "postcss-preset-mantine": "^1.17.0",
+    "postcss": "^8.5.15",
+    "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
     "storybook": "^8.6.0",
     "typescript": "^5.5.4"
   },
   "msw": {
-    "workerDirectory": ["public"]
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
