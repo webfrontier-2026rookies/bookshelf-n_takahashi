@@ -1,5 +1,5 @@
-import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { Controller } from "@nestjs/common";
+import { GrpcMethod } from "@nestjs/microservices";
 
 interface PingRequest {
   message: string;
@@ -12,11 +12,11 @@ interface PingReply {
 
 @Controller()
 export class HealthController {
-  @GrpcMethod('Health', 'Ping')
+  @GrpcMethod("Health", "Ping")
   ping(data: PingRequest): PingReply {
     return {
-      message: `pong (received: ${data.message ?? ''})`.trim(),
-      service: 'catalog-service',
+      message: `pong (received: ${data.message ?? ""})`.trim(),
+      service: "catalog-service",
     };
   }
 }

@@ -1,7 +1,6 @@
-// src/users/commands/signup/signup.handler.ts
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { SignUpDto } from "./user.dto";
+import { SignUpDto } from "./signup.dto";
 import { ulid } from "ulid";
 import * as bcrypt from "bcrypt";
 
@@ -10,6 +9,10 @@ export class SignUpCommandHandler {
   constructor(private prisma: PrismaService) {}
 
   async execute(dto: SignUpDto) {
+    console.log(
+      "=== 🚨 バックエンドに届いた実際のDTOの中身はこれだ！ ===",
+      dto,
+    );
     // 1. 重複チェック
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email },

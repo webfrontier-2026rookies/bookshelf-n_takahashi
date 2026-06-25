@@ -5,45 +5,104 @@ import {
   InputType,
   Field,
   ObjectType,
+  Context,
 } from "@nestjs/graphql";
+import { firstValueFrom } from "rxjs";
+import { Inject, OnModuleInit } from "@nestjs/common";
+import { ClientGrpc } from "@nestjs/microservices"; // 💡 追加
+
+//新規登録時のユーザ－の入力値
 @InputType()
 export class SignUpDto {
-  @Field()
-  displayName!: string;
+  @Field() displayName!: string;
+  @Field() email!: string;
+  @Field() password!: string;
+}
 
+//ログイン時のユーザーの入力値
+@InputType()
+export class LoginDto {
+  @Field() email!: string;
+  @Field() password!: string;
+}
+
+@ObjectType()
+export class AuthResponse {
+  @Field() accessToken!: string;
+  @Field() email!: string;
+  @Field() displayName!: string;
+}
+
+@ObjectType()
+export class SignUpResponse {
   @Field()
   email!: string;
 
   @Field()
-  passwordHash!: string;
+  message!: string;
+}
+
+//型安全のためのインターフェース定義
+interface IUserService {
+  login(dto: LoginDto): import("rxjs").Observable<{
+    accessToken: string;
+    email: string;
+    displayName: string;
+    password: string;
+  }>;
+  signUp(dto: SignUpDto): import("rxjs").Observable<any>;
 }
 
 @Resolver()
-export class UserResolver {
-  @Mutation(() => String)
+export class UserResolver implements OnModuleInit {
+  private userServiceClient!: IUserService;
+
+  constructor(
+    @Inject("USER_PACKAGE") private client: ClientGrpc, // 💡 依存関係の注入
+  ) {}
+
+  //起動時の初期化処理
+  onModuleInit() {
+    this.userServiceClient =
+      this.client.getService<IUserService>("UserService");
+  }
+
+  @Mutation(() => SignUpResponse)
   async signUp(@Args("dto", { type: () => SignUpDto }) dto: SignUpDto) {
     console.log("--- 🎉 BFFの窓口が正式な SignUpDto を受け取りました！ ---");
-    console.log("データ中身:", dto);
-
-    return "BFFで型を認識し、受け取りに成功しました！";
+    await firstValueFrom(this.userServiceClient.signUp(dto));
+    return {
+      message: "BFFで型を認識し、受け取りに成功しました！",
+    };
   }
-}
 
-@InputType()
-export class LoginDto {
-  @Field()
-  email!: string;
+  @Mutation(() => AuthResponse)
+  async login(
+    @Args("dto", { type: () => LoginDto }) dto: LoginDto,
+    @Context() context: any,
+  ) {
+    console.log("--- 🔑 BFF：ログインの受付をしました ---", dto);
 
-  @Field()
-  password!: string;
-}
+    const result = await firstValueFrom(this.userServiceClient.login(dto));
 
-//ログイン成功時に画面に返すデータの形（会員証トークンとユーザー情報）
-@ObjectType()
-export class AuthResponse {
-  @Field()
-  accessToken!: string;
+    const reply = context.reply;
+    if (reply) {
+      reply.setCookie("token", result.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24,
+      });
+    }
 
-  @Field()
-  email!: string;
+    console.log(
+      "クッキー(HttpOnly)のセットが完了しました。画面にお返事します。",
+    );
+    return {
+      accessToken: result.accessToken,
+      email: dto.email,
+      displayName: result.displayName,
+    };
+  }
 }

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc SignUp (SignUpRequest) returns (SignUpResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+}
+
+//新規アカウント登録時にBFFから送られてくるデータの形
+message SignUpRequest {
+  string displayName = 1;
+  string email = 2;
+  string password = 3;
+}
+
+//user-serviceからBFFへ返すデータの形
+message SignUpResponse {
+  string message = 1;
+}
+
+//ログイン時にBFFから送られてくるデータの形
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+//user-serviceからBFFへ返すデータの形
+message LoginResponse {
+  string accessToken = 1;
+  string email = 2;
+  string displayName = 3;
+}
