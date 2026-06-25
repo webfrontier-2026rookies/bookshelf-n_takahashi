@@ -2,8 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthResponse {
+  accessToken: String!
+  displayName: String!
+  email: String!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
 type Mutation {
-  signUp(dto: SignUpDto!): String!
+  login(dto: LoginDto!): AuthResponse!
+  signUp(dto: SignUpDto!): SignUpResponse!
 }
 
 type Query {
@@ -14,5 +26,10 @@ type Query {
 input SignUpDto {
   displayName: String!
   email: String!
-  passwordHash: String!
+  password: String!
+}
+
+type SignUpResponse {
+  email: String!
+  message: String!
 }
