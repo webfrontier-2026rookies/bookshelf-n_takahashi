@@ -4,11 +4,8 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { HealthModule } from "./health/health.module";
 import { JwtModule } from "@nestjs/jwt";
 import { SignUpCommandHandler } from "src/users/commands/signup/signup.handler";
-import { LoginQueryHandler } from "src/users/query/login/login.handler";
+import { LoginQueryHandler } from "src/users/commands/login/login.handler";
 import { UserResolver } from "src/users/user.resolver";
-import { UsersController } from "./users/user.controller";
-import { HealthController } from "./health/health.controller";
-import { PrismaService } from "./prisma/prisma.service";
 
 @Module({
   imports: [
@@ -23,13 +20,7 @@ import { PrismaService } from "./prisma/prisma.service";
       signOptions: { expiresIn: "1d" },
     }),
   ],
-  controllers: [HealthController, UsersController],
-  providers: [
-    SignUpCommandHandler,
-    LoginQueryHandler,
-    UserResolver,
-    UsersController,
-    PrismaService,
-  ],
+  controllers: [],
+  providers: [SignUpCommandHandler, LoginQueryHandler, UserResolver],
 })
 export class AppModule {}
