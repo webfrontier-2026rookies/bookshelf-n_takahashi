@@ -13,13 +13,11 @@
   },
   "dependencies": {
     "@bookshelf/proto": "workspace:*",
-    "@fastify/cookie": "^11.0.2",
     "@grpc/grpc-js": "^1.12.2",
     "@grpc/proto-loader": "^0.7.13",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/graphql": "^13.0.0",
-    "@nestjs/jwt": "^11.0.2",
     "@nestjs/mercurius": "^13.0.0",
     "@nestjs/microservices": "^11.0.0",
     "@nestjs/platform-fastify": "^11.0.0",

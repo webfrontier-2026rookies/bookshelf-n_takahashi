@@ -1,9 +1,9 @@
 // apps/user-service/src/users/user.resolver.ts
 import { Resolver, Mutation, Args, Context } from "@nestjs/graphql";
 import { SignUpCommandHandler } from "./commands/signup/signup.handler";
-import { LoginQueryHandler } from "./query/login/login.handler";
-import { SignUpDto } from "./commands/signup/signup.dto";
-import { LoginDto } from "./query/login/login.dto";
+import { LoginQueryHandler } from "./commands/login/login.handler";
+import { SignUpDto } from "./commands/signup/user.dto";
+import { LoginDto } from "./commands/login/login.dto";
 import { Response } from "express";
 
 @Resolver()
@@ -25,6 +25,6 @@ export class UserResolver {
     @Args("dto") dto: LoginDto,
     @Context() context: { req: any; res: Response },
   ) {
-    return this.loginHandler.execute(dto);
+    return this.loginHandler.execute(dto, context.res);
   }
 }
