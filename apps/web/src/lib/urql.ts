@@ -9,7 +9,7 @@ export const urqlClient: Client = createClient({
 
   //認証実装後、fetchOptions で Authorization ヘッダ(JWT)を付与する
   fetchOptions: () => {
-    // 1. Zustandのストアから最新のトークンを取得
+    //Zustandから最新のトークンを取得
     const token = useAuthStore.getState().token;
 
     return {

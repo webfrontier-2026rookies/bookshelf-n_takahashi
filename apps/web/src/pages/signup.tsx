@@ -10,14 +10,13 @@ import {
   Container,
   Stack,
 } from "@mantine/core";
-import { useMutation } from "urql"; // 🎯 useQueryからuseMutationに修正
+import { useMutation } from "urql";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import { signUpSchema, SignUpFormInput } from "@/schemas/authSchema";
 
-// 🎯 新規登録用のGraphQL Mutation（サーバーのSignUpInput型に合わせます）
 const SIGN_UP_MUTATION = `
   mutation SignUp($dto: SignUpDto!) {
     signUp(dto: $dto) {
@@ -30,7 +29,7 @@ export default function SignupPage() {
   const router = useRouter();
   const { setAuth } = useAuthStore();
 
-  // 🔌 1. urql の新規登録 mutation を準備
+  //urql の新規登録 mutation を準備
   const [signUpResult, signUp] = useMutation(SIGN_UP_MUTATION);
 
   //React Hook Form と Zod の合体
@@ -46,7 +45,7 @@ export default function SignupPage() {
   //バリデーションを通過した時だけ呼ばれる送信処理
   const onSubmit = async (formData: SignUpFormInput) => {
     try {
-      // urqlClient を通じてBFFへデータを安全に送信
+      //BFFへデータを安全に送信
       const result = await signUp({
         dto: {
           displayName: formData.displayName,
@@ -60,7 +59,7 @@ export default function SignupPage() {
         return;
       }
 
-      //成功したらトークンと名前をZustand（LocalStorage）に記憶
+      //トークンと名前をZustand（LocalStorage）に記憶
       if (result.data?.signUp) {
         const { accessToken, displayName } = result.data.signUp;
         setAuth(accessToken, displayName);
