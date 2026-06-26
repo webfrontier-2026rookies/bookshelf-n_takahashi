@@ -1,4 +1,5 @@
-import { useState } from "react";
+"use client";
+
 import {
   TextInput,
   PasswordInput,
@@ -11,56 +12,65 @@ import {
   Anchor,
 } from "@mantine/core";
 import Link from "next/link";
+import { loginSchema, LoginFormInput } from "@/schemas/authSchema";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth";
+import { useMutation } from "urql";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+//ログインをbffへ要求する
+const LOGIN_MUTATION = `
+  mutation Login($dto: LoginDto!) {
+    login(dto: $dto) {
+      accessToken
+      displayName
+    }
+  }
+`;
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const setAuth = useAuthStore((state) => state.setAuth); //zustandの保存関数
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+  const [loginResult, login] = useMutation(LOGIN_MUTATION);
 
+  //React Hook Form と Zod の合体
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormInput>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange", //入力するたびにリアルタイムでチェックする設定
+  });
+
+  //バリデーション通過後に実行される送信処理
+  const onSubmit = async (formData: LoginFormInput) => {
     try {
-      const response = await fetch("http://localhost:4000/graphql", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          query: `
-            mutation Login($dto: LoginDto!) {
-              login(dto: $dto) {
-                accessToken
-                email
-                displayName
-              }
-            }
-          `,
-          variables: {
-            dto: {
-              email,
-              password,
-            },
-          },
-        }),
+      const result = await login({
+        dto: {
+          email: formData.email,
+          password: formData.password,
+        },
       });
 
-      const result = await response.json();
-
-      if (result.errors) {
-        alert(`ログイン失敗: ${result.errors[0].message}`);
-      } else {
-        const { displayName } = result.data.login;
-
-        alert(`ようこそ、${displayName}さん`);
-
-        //マイページなどへリダイレクト
+      if (result.error) {
+        alert(result.error.message || "ログインに失敗しました");
+        return;
       }
-    } catch (error) {
-      console.error("通信エラー:", error);
-      alert("サーバーとの通信に失敗しました。");
-    } finally {
-      setLoading(false);
+
+      if (result.data?.login) {
+        const { accessToken, displayName } = result.data.login;
+        setAuth(accessToken, displayName);
+
+        alert(`おかえりなさい、${displayName}さん！`);
+
+        // ログイン後の画面へリダイレクト
+        //router.push("/dashboard");
+      }
+    } catch (err) {
+      alert("通信エラーが発生しました");
     }
   };
 
@@ -77,25 +87,30 @@ export default function Login() {
       </Text>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack>
+            {/* メールアドレス入力欄 */}
             <TextInput
               label="メールアドレス"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register("email")}
+              error={errors.email?.message}
             />
 
+            {/* パスワード入力欄 */}
             <PasswordInput
               label="パスワード"
               placeholder="パスワードを入力"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              {...register("password")}
+              error={errors.password?.message}
             />
 
-            <Button type="submit" fullWidth mt="xl" loading={loading}>
+            <Button
+              type="submit"
+              fullWidth
+              mt="xl"
+              loading={loginResult.fetching}
+            >
               ログイン
             </Button>
           </Stack>

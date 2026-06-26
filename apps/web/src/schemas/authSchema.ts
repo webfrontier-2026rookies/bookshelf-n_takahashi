@@ -31,3 +31,6 @@ export const signUpSchema = z
     message: "パスワードが一致しません",
     path: ["confirmPassword"],
   });
+
+export type LoginFormInput = z.infer<typeof loginSchema>;
+export type SignUpFormInput = z.infer<typeof signUpSchema>;

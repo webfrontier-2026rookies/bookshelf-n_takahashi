@@ -7,4 +7,7 @@ export class SignUpDto {
   @IsString()
   @MinLength(10, { message: "パスワードは10文字以上で入力してください" })
   password!: string;
+
+  @IsString()
+  displayName!: string;
 }
