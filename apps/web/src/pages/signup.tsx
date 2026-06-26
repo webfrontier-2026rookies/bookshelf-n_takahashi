@@ -1,6 +1,6 @@
+"use client";
+
 import React from "react";
-import "@mantine/hooks";
-import { useState } from "react";
 import {
   TextInput,
   PasswordInput,
@@ -10,51 +10,66 @@ import {
   Container,
   Stack,
 } from "@mantine/core";
+import { useMutation } from "urql"; // 🎯 useQueryからuseMutationに修正
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth";
+import { signUpSchema, SignUpFormInput } from "@/schemas/authSchema";
 
-export default function signup() {
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+// 🎯 新規登録用のGraphQL Mutation（サーバーのSignUpInput型に合わせます）
+const SIGN_UP_MUTATION = `
+  mutation SignUp($dto: SignUpDto!) {
+    signUp(dto: $dto) {
+      message
+    }
+  }
+`;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true); // ローディング開始
+export default function SignupPage() {
+  const router = useRouter();
+  const { setAuth } = useAuthStore();
 
+  // 🔌 1. urql の新規登録 mutation を準備
+  const [signUpResult, signUp] = useMutation(SIGN_UP_MUTATION);
+
+  //React Hook Form と Zod の合体
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormInput>({
+    resolver: zodResolver(signUpSchema),
+    mode: "onChange",
+  });
+
+  //バリデーションを通過した時だけ呼ばれる送信処理
+  const onSubmit = async (formData: SignUpFormInput) => {
     try {
-      const response = await fetch("http://localhost:4000/graphql", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          query: `
-            mutation SignUp($dto: SignUpDto!) {
-              signUp(dto: $dto) {
-                message
-              }
-            }
-          `,
-          variables: {
-            dto: {
-              displayName,
-              email,
-              password: password,
-            },
-          },
-        }),
+      // urqlClient を通じてBFFへデータを安全に送信
+      const result = await signUp({
+        dto: {
+          displayName: formData.displayName,
+          email: formData.email,
+          password: formData.password,
+        },
       });
 
-      const result = await response.json();
-
-      if (result.errors) {
-        alert(`登録失敗: ${result.errors[0].message}`);
-      } else {
-        alert("新規登録が成功しました！");
+      if (result.error) {
+        alert(result.error.message || "新規登録に失敗しました");
+        return;
       }
-    } catch (error) {
-      console.error("通信エラー:", error);
-    } finally {
-      setLoading(false); // ローディング解除
+
+      //成功したらトークンと名前をZustand（LocalStorage）に記憶
+      if (result.data?.signUp) {
+        const { accessToken, displayName } = result.data.signUp;
+        setAuth(accessToken, displayName);
+
+        alert("新規登録に成功しました！");
+        router.push("/login");
+      }
+    } catch (err) {
+      alert("通信エラーが発生しました");
     }
   };
 
@@ -65,33 +80,46 @@ export default function signup() {
       </Title>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Stack>
+            {/* 表示名 */}
             <TextInput
               label="表示名"
               placeholder="あなたの名前"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
+              {...register("displayName")}
+              error={errors.displayName?.message}
             />
 
+            {/* メールアドレス */}
             <TextInput
               label="メールアドレス"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              {...register("email")}
+              error={errors.email?.message}
             />
 
+            {/* パスワード */}
             <PasswordInput
               label="パスワード"
               placeholder="パスワードを入力"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              {...register("password")}
+              error={errors.password?.message}
             />
 
-            <Button type="submit" fullWidth mt="xl" loading={loading}>
+            {/* 確認用パスワード*/}
+            <PasswordInput
+              label="確認用パスワード"
+              placeholder="パスワードを再入力"
+              {...register("confirmPassword")}
+              error={errors.confirmPassword?.message}
+            />
+
+            <Button
+              type="submit"
+              fullWidth
+              mt="xl"
+              loading={signUpResult.fetching}
+            >
               登録する
             </Button>
           </Stack>
