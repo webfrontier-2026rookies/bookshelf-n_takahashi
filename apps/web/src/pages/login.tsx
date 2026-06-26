@@ -19,6 +19,9 @@ import { useMutation } from "urql";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+//codegenがmutationを見つけられるようにするコード
+const gql = (strings: TemplateStringsArray) => strings.join("");
+
 //ログインをbffへ要求する
 const LOGIN_MUTATION = `
   mutation Login($dto: LoginDto!) {
