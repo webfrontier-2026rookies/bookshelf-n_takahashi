@@ -5,6 +5,7 @@ import { join } from "path";
 import { HealthModule } from "./health/health.module";
 import { UserResolver } from "./users/user.resolver";
 import { ClientsModule, Transport } from "@nestjs/microservices";
+import { BookModule } from "./book/book.module";
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
         options: {
           package: "user",
           protoPath: join(process.cwd(), "../../packages/proto/src/user.proto"),
-          url: "localhost:50051",
+          url: process.env.USER_SERVICE_URL,
         },
       },
     ]),
@@ -29,6 +30,7 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
     HealthModule,
     // TODO(学習者): AuthModule / BookModule / ReviewModule を追加し、
     //               DataLoader をここ（BFF）で実装して N+1 を解消する。
+    BookModule,
   ],
   providers: [UserResolver],
 })
