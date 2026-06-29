@@ -1,13 +1,18 @@
-import type { StorybookConfig } from '@storybook/nextjs';
+// 📄 apps/web/.storybook/main.ts
+
+import { StorybookConfig } from "@storybook/react-vite";
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(ts|tsx)'],
-  addons: ['@storybook/addon-essentials'],
+  stories: ["../src/**/*.stories.@(ts|tsx)"],
+  addons: ["@storybook/addon-essentials"],
   framework: {
-    name: '@storybook/nextjs',
+    name: "@storybook/react-vite",
     options: {},
   },
-  staticDirs: ['../public'],
+  docs: {
+    autodocs: "tag",
+  },
+  staticDirs: ["../public"],
 };
 
 export default config;

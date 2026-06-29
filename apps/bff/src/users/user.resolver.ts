@@ -6,6 +6,7 @@ import {
   Field,
   ObjectType,
   Context,
+  Query,
 } from "@nestjs/graphql";
 import { firstValueFrom } from "rxjs";
 import { Inject, OnModuleInit } from "@nestjs/common";
