@@ -22,8 +22,8 @@ async function bootstrap() {
   });
 
   const fastifyInstance = app.getHttpAdapter().getInstance();
-  await fastifyInstance.register(fastifyCookie, {
-    secret: "COOKIE_SIGN_SECRET_XYZ",
+  await fastifyInstance.register(fastifyCookie as any, {
+    secret: process.env.JWT_SECRET,
   });
 
   const port = Number(process.env.PORT ?? 4000);

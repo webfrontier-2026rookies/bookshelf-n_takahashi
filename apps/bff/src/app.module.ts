@@ -5,21 +5,35 @@ import { join } from "path";
 import { HealthModule } from "./health/health.module";
 import { UserResolver } from "./users/user.resolver";
 import { ClientsModule, Transport } from "@nestjs/microservices";
+import { BookModule } from "./book/book.module";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
-    ClientsModule.register([
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ".env",
+    }),
+    ClientsModule.registerAsync([
       {
         name: "USER_PACKAGE",
-        transport: Transport.GRPC,
-        options: {
-          package: "user",
-          protoPath: join(process.cwd(), "../../packages/proto/src/user.proto"),
-          url: "localhost:50051",
-        },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.GRPC,
+          options: {
+            package: "user",
+            protoPath: join(
+              process.cwd(),
+              "../../packages/proto/src/user.proto",
+            ),
+            url: configService.get<string>(
+              "USER_SERVICE_URL",
+              "localhost:50051",
+            ),
+          },
+        }),
+        inject: [ConfigService],
       },
     ]),
-    //resolver.tsの型定義からschema.gql を自動生成
     GraphQLModule.forRoot<MercuriusDriverConfig>({
       driver: MercuriusDriver,
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
@@ -27,8 +41,7 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
       sortSchema: true,
     }),
     HealthModule,
-    // TODO(学習者): AuthModule / BookModule / ReviewModule を追加し、
-    //               DataLoader をここ（BFF）で実装して N+1 を解消する。
+    BookModule,
   ],
   providers: [UserResolver],
 })
