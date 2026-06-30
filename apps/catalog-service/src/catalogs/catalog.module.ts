@@ -8,7 +8,7 @@ import { GetBookHandler } from "src/catalogs/queries/get-book.handler";
 
 @Module({
   imports: [],
-  controllers: [CatalogController], // 🎯 ココにコントローラーを追加！
+  controllers: [CatalogController],
   providers: [
     PrismaService,
     CatalogRepository,

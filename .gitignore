@@ -31,5 +31,4 @@ storybook-static/
 .DS_Store
 
 # generated (codegen 出力を生成物として扱う場合)
-# apps/web/src/gql/
-**/src/generated/client/
+
