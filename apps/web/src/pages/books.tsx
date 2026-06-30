@@ -48,7 +48,7 @@ export default function BookList() {
     <Container size="lg" py="xl">
       <Group justify="space-between" mb="xl">
         <Title order={1}>書籍管理一覧</Title>
-        <Button onClick={() => router.push("/")} color="blue">
+        <Button onClick={() => router.push("/create")} color="blue">
           新しい本を登録する
         </Button>
       </Group>
@@ -64,8 +64,8 @@ export default function BookList() {
               key={book.id}
               title={book.title}
               author={book.author}
-              // isbnやdescriptionはオプショナルなので、データがあれば渡す形にします
-              // description="バックエンドから取得した本物のデータです。"
+              isbn={book.isbn}
+              description={book.description}
               onDetailClick={() => router.push(`/books/${book.id}`)}
             />
           ))}

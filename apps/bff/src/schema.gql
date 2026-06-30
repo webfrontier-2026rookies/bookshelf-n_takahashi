@@ -8,12 +8,6 @@ type AuthResponse {
   email: String!
 }
 
-type Book {
-  author: String!
-  id: String!
-  title: String!
-}
-
 input LoginDto {
   email: String!
   password: String!
@@ -27,7 +21,6 @@ type Mutation {
 type Query {
   """フロント→BFF→gRPCサービスの疎通確認用クエリ"""
   health: String!
-  listBooks: [Book!]!
 }
 
 input SignUpDto {
