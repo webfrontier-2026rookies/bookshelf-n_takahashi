@@ -22,6 +22,13 @@ export type AuthResponse = {
   email: Scalars['String']['output'];
 };
 
+export type Book = {
+  __typename?: 'Book';
+  author: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+};
+
 export type LoginDto = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -47,6 +54,7 @@ export type Query = {
   __typename?: 'Query';
   /** フロント→BFF→gRPCサービスの疎通確認用クエリ */
   health: Scalars['String']['output'];
+  listBooks: Array<Book>;
 };
 
 export type SignUpDto = {
