@@ -18,23 +18,18 @@ interface CatalogServiceClient {
 export class CatalogResolver implements OnModuleInit {
   private catalogService!: CatalogServiceClient;
 
-  // 🔗 gRPCクライアント（catalog-serviceと喋るためのプラグ）を注入
+  //gRPCクライアント（catalog-serviceと喋るためのプラグ）を注入
   constructor(@Inject("CATALOG_PACKAGE") private client: ClientGrpc) {}
 
   onModuleInit() {
-    // catalog.proto に書かれているサービスと接続
     this.catalogService =
       this.client.getService<CatalogServiceClient>("CatalogService");
   }
 
-  /**
-   * 🔍 1. 書籍一覧取得の窓口（GraphQLのクエリ）
-   * 🎯 ここに @Query() を書くことで、schema.gqlに「listBooks」が自動追加されます！
-   */
+  //書籍一覧取得の窓口（GraphQLのクエリ）
   @Query(() => [Book], { name: "listBooks" })
   async listBooks() {
-    // gRPC経由で、さきほど作った catalog-service のコントローラーを呼び出す
     const response = await lastValueFrom(this.catalogService.listBooks({}));
-    return response.books; // コントローラーがオブジェクトで包んでくれた { books: [...] } から配列を取り出して返す
+    return response.books;
   }
 }

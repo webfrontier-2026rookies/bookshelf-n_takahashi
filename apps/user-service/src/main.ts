@@ -4,7 +4,7 @@ import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
-  // 共有パッケージから .proto の絶対パスを解決する（pnpm workspace + exports map）
+  //.proto の絶対パスを解決
   const protoPath = require.resolve("@bookshelf/proto/health.proto");
   const url = process.env.USER_SERVICE_GRPC_URL ?? "0.0.0.0:50051";
   const userProtoPath = require.resolve("@bookshelf/proto/user.proto");
@@ -23,7 +23,6 @@ async function bootstrap() {
   );
 
   await app.listen();
-  // eslint-disable-next-line no-console
   console.log(`[user-service] gRPC listening on ${url}`);
 }
 

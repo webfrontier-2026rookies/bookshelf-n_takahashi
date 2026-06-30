@@ -1,5 +1,5 @@
 import { Controller, UsePipes, ValidationPipe } from "@nestjs/common";
-import { GrpcMethod } from "@nestjs/microservices"; // ※プロジェクトがgRPCの場合。HTTPなら @Get 等になります
+import { GrpcMethod } from "@nestjs/microservices";
 import { RegisterBookHandler } from "./commands/register/register-book.handler";
 import { ListBooksHandler } from "../catalogs/queries/list-book.handler";
 import { GetBookHandler } from "../catalogs/queries/get-book.handler";
@@ -25,7 +25,7 @@ export class CatalogController {
   @GrpcMethod("CatalogService", "ListBooks")
   async listBooks() {
     const books = await this.listBooksHandler.execute();
-    return { books }; // 配列をオブジェクトで包んで返します
+    return { books };
   }
 
   //書籍詳細取得の窓口
