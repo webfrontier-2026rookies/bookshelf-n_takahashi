@@ -1,4 +1,3 @@
-// 📄 apps/web/src/app/books/[id]/page.tsx
 "use client";
 
 import React from "react";
